@@ -8,7 +8,7 @@
 ***
 ## JavaScript作用域学习笔记
 
-	作用域是JavaScript中最重要的概念之一，要想学好JavaScript就必须掌握作用域这个概念。
+作用域是JavaScript中最重要的概念之一，要想学好JavaScript就必须掌握作用域这个概念。
 	
 ### 作用域
 
@@ -22,22 +22,20 @@
 		
 	(1) 定义在最外层函数外面的变量和最外层函数拥有全局作用域。
 		
-	 	`
-	 		var outer = "hello world"; 
+	 	var outer = "hello world"; 
 	 		
-	 		function foo(){
-	 			var inner = "hello js!";
+	 	function foo(){
+	 		var inner = "hello js!";
 				
-				function bar(){
-					console.log(inner); 
-				}				
-	 		}
+			function bar(){
+				console.log(inner); 
+			}				
+ 		}
 	 		
-	 		console.log(outer); // "hello world"
-	 		console.log(inner); //发生错误，无法访问到inner
-	 		console.log(foo()); //"hello js!"
-	 		console.log(bar()); //发生错误，无法访问到bar()
-	 	` 
+	 	console.log(outer); // "hello world"
+	 	console.log(inner); //发生错误，无法访问到inner
+	 	console.log(foo()); //"hello js!"
+	 	console.log(bar()); //发生错误，无法访问到bar()
 	 	
 	 (2)在非严格模式下未声明直接初始化的变量。
 	 
@@ -48,46 +46,66 @@
 
 	函数作用域即变量或函数定义在外层函数中，只能在外层函数中进行访问，在其之外的地方访问会抛出错误。
 		
-		`
-			function foo(){
-				var msg = "hello world"; 
+		
+		function foo(){
+			var msg = "hello world"; 
 				
-				function bar(){
-					console.log(msg); 
-				}
+			function bar(){
+				console.log(msg); 
 			}
+		}
 			
-			console.log(msg); //发生错误
-			console.log(bar()); //发生错误
-		`
+		console.log(msg); //发生错误
+		console.log(bar()); //发生错误
+		
 		
 4. 块作用域
 
-	es6中新增了let命令和const命令，用于申明变量，与var用法类似，只不过所声明的变量只在let命令所在的代码块有效，即声明的变量拥有块级作用域。
+	es6中新增了let命令，用于申明变量，与var用法类似，只不过所声明的变量只在let命令所在的代码块有效，即声明的变量拥有块级作用域。
 		
-		`
-			{
-				let a = 5; 
-				var b = 10; 
-			}
+		
+		{
+			let a = 5; 
+			var b = 10; 
+		}
 			
-			a //ReferenceError: a is not defined
-			b //10		
-		`
+		a //ReferenceError: a is not defined
+		b //10		
+		
 		
 	这证明由let声明的变量具有块级作用域
+	
+	除了let以外，es6还新增了const命令，同样可以用来创建具有块级作用域的变量，但其值是固定的，一旦修改将引发错误。
+	
+		var foo = true; 
+		
+		if(foo){
+			var a = 2; 
+			const b = 3; 
+			
+			a = 3; //正常
+			b = 4; //错误
+		}	
+		
+		console.log(a); //3
+		console.log(b); //ReferenceError
 		
 	虽然在es6之前的版本中不存在块级作用域这个概念，但可以使用匿名函数模拟块级作用域。（匿名函数：没有名字的函数，有时也称为纳姆达函数），其语法形式如下：
 		
-		`
-			(function(){
+		
+		(function(){
 			
-				//块级作用域
+			//块级作用域
 				
-			})()
-		`
+		})()
+	
 		
 	以上代码的意思是创建并立即调用一个匿名函数，第一个圆括号中是函数表达式，第二个圆括号表示立刻执行。
 		
 ### 作用域链
-1.  
+
+当代码在环境中执行时，会创建当前对象的作用域链来保证对执行环境中有权访问的变量和函数的有序访问。作用域链的第一个对象始终是当前正在执行的代码所在环境的变量对象。
+
+如果执行环境是函数，那么将其活动对象作为作用域链中的第一个对象，其包含对象作为第二个对象，以此类推。
+
+当在执行环境中查找标识符时，会沿着作用域链一级一级进行搜索，当找到第一个同名标识符时，会停止搜索；若没有找到，会沿着作用域链一直搜索，直到全局作用域。若还是没有找到，便报错。
